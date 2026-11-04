@@ -1,3 +1,5 @@
+from quiz_data import create_default_quizzes
+
 def show_menu():
     print("=== 나만의 퀴즈 게임 ===")
     print("1. 퀴즈 풀기")
@@ -27,7 +29,32 @@ def read_number(prompt, minimum, maximum):
         print(f"{minimum}부터 {maximum} 사이의 번호를 입력해주세요.")
 
 
+def play_quiz(quizzes):
+    if not quizzes:
+        print("등록된 퀴즈가 없습니다.")
+        return
+
+    correct_count = 0
+    total = len(quizzes)
+
+    for number, quiz in enumerate(quizzes, start=1):
+        print(f"\n[문제 {number}/{total}]")
+        quiz.display()
+        selected = read_number("정답 번호(1~4): ", 1, 4)
+
+        if quiz.is_correct(selected):
+            print("정답입니다!")
+            correct_count += 1
+        else:
+            answer_text = quiz.choices[quiz.answer - 1]
+            print(f"오답입니다. 정답은 {quiz.answer}번 '{answer_text}'입니다.")
+
+    print(f"\n결과: {total}문제 중 {correct_count}문제 정답")
+    return correct_count
+
 def main():
+    quizzes = create_default_quizzes()
+
     while True:
         show_menu()
         choice = read_number("선택: ", 1, 5)
@@ -36,7 +63,7 @@ def main():
             print("게임을 종료합니다.")
             break
         elif choice == 1:
-            print("퀴즈 풀기를 선택했어요.")
+            play_quiz(quizzes)
         elif choice == 2:
             print("퀴즈 추가를 선택했어요.")
         elif choice == 3:
