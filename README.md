@@ -100,3 +100,6 @@ python3 main.py
 
 `state.json`은 실행 중 생성되는 파일이므로 Git 관리에서 제외합니다.
 저장소를 처음 복제한 환경에서는 기본 문제 5개와 최고 점수 0점으로 시작합니다.
+## Git 복제 실습
+
+별도 폴더에 저장소를 clone한 뒤 README를 수정하고 commit 및 push했습니다.
