@@ -91,6 +91,7 @@ class QuizGame:
     def __init__(self):
         self.quizzes = create_default_quizzes()
         self.best_score = 0
+        self.load()
 
     def play(self):
         score = play_quiz(self.quizzes)
@@ -132,6 +133,66 @@ class QuizGame:
 
         print("게임 기록을 저장했습니다.")
         return True
+    
+    def load(self):
+        path = Path(__file__).resolve().parent / "state.json"
+
+        try:
+            with path.open("r", encoding="utf-8") as file:
+                state = json.load(file)
+
+            if not isinstance(state, dict):
+                raise ValueError("저장 데이터는 딕셔너리여야 합니다.")
+
+            quiz_data = state["quizzes"]
+            best_score = state["best_score"]
+
+            if not isinstance(quiz_data, list):
+                raise ValueError("문제 목록 형식이 올바르지 않습니다.")
+
+            if type(best_score) is not int or best_score < 0:
+                raise ValueError("최고 점수는 0 이상의 정수여야 합니다.")
+
+            loaded_quizzes = []
+
+            for item in quiz_data:
+                if not isinstance(item, dict):
+                    raise ValueError("문제 형식이 올바르지 않습니다.")
+
+                question = item["question"]
+                choices = item["choices"]
+                answer = item["answer"]
+
+                if not isinstance(question, str) or not question.strip():
+                    raise ValueError("질문은 비어 있지 않은 문자열이어야 합니다.")
+
+                if (
+                    not isinstance(choices, list)
+                    or len(choices) != 4
+                    or any(
+                        not isinstance(choice, str) or not choice.strip()
+                        for choice in choices
+                    )
+                ):
+                    raise ValueError("선택지는 비어 있지 않은 문자열 4개여야 합니다.")
+
+                if type(answer) is not int or not 1 <= answer <= 4:
+                    raise ValueError("정답 번호는 1~4여야 합니다.")
+
+                loaded_quizzes.append(
+                    Quiz(question=question, choices=choices, answer=answer)
+                )
+
+        except FileNotFoundError:
+            return
+        except (OSError, ValueError, KeyError) as error:
+            print(f"저장 파일을 불러오지 못했습니다: {error}")
+            print("기본 문제와 최고 점수 0점으로 시작합니다.")
+            return
+
+        self.quizzes = loaded_quizzes
+        self.best_score = best_score
+        print("저장된 게임 기록을 불러왔습니다.")
 
 def main():
     game = QuizGame()
