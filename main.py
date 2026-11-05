@@ -76,6 +76,15 @@ def add_quiz(quizzes):
 
     print(f"퀴즈를 추가했습니다. 현재 총 {len(quizzes)}문제입니다.")
 
+def list_quizzes(quizzes):
+    if not quizzes:
+        print("등록된 퀴즈가 없습니다.")
+        return
+
+    print(f"\n[퀴즈 목록] 총 {len(quizzes)}문제")
+    for number, quiz in enumerate(quizzes, start=1):
+        print(f"{number}. {quiz.question}")
+
 def main():
     quizzes = create_default_quizzes()
 
@@ -91,7 +100,7 @@ def main():
         elif choice == 2:
             add_quiz(quizzes)
         elif choice == 3:
-            print("퀴즈 목록을 선택했어요.")
+            list_quizzes(quizzes)
         elif choice == 4:
             print("점수 확인을 선택했어요.")
 
