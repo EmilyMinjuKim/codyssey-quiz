@@ -1,5 +1,7 @@
 from quiz import Quiz
 from quiz_data import create_default_quizzes
+import json
+from pathlib import Path
 
 def show_menu():
     print("=== 나만의 퀴즈 게임 ===")
@@ -85,29 +87,71 @@ def list_quizzes(quizzes):
     for number, quiz in enumerate(quizzes, start=1):
         print(f"{number}. {quiz.question}")
 
+class QuizGame:
+    def __init__(self):
+        self.quizzes = create_default_quizzes()
+        self.best_score = 0
+
+    def play(self):
+        score = play_quiz(self.quizzes)
+
+        if score is not None and score > self.best_score:
+            self.best_score = score
+            print("최고 점수를 갱신했습니다!")
+
+    def add(self):
+        add_quiz(self.quizzes)
+
+    def show_list(self):
+        list_quizzes(self.quizzes)
+
+    def show_score(self):
+        print(f"\n최고 점수: {self.best_score}점")
+
+    def save(self):
+        state = {
+            "quizzes": [
+                {
+                    "question": quiz.question,
+                    "choices": quiz.choices,
+                    "answer": quiz.answer,
+                }
+                for quiz in self.quizzes
+            ],
+            "best_score": self.best_score,
+        }
+
+        path = Path(__file__).resolve().parent / "state.json"
+
+        try:
+            with path.open("w", encoding="utf-8") as file:
+                json.dump(state, file, ensure_ascii=False, indent=2)
+        except OSError as error:
+            print(f"저장하지 못했습니다: {error}")
+            return False
+
+        print("게임 기록을 저장했습니다.")
+        return True
+
 def main():
-    quizzes = create_default_quizzes()
-    best_score = 0
+    game = QuizGame()
 
     while True:
         show_menu()
         choice = read_number("선택: ", 1, 5)
 
         if choice == 5:
+            game.save()
             print("게임을 종료합니다.")
             break
         elif choice == 1:
-            score = play_quiz(quizzes)
-            if score is not None and score > best_score:
-                best_score = score
-                print("최고 점수를 갱신했습니다!")
+            game.play()
         elif choice == 2:
-            add_quiz(quizzes)
+            game.add()
         elif choice == 3:
-            list_quizzes(quizzes)
+            game.show_list()
         elif choice == 4:
-            print(f"\n최고 점수: {best_score}점")
-
+            game.show_score()
 
 if __name__ == "__main__":
     try:
