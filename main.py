@@ -100,6 +100,9 @@ class QuizGame:
             self.best_score = score
             print("최고 점수를 갱신했습니다!")
 
+    def show_menu(self):
+        show_menu()
+
     def add(self):
         add_quiz(self.quizzes)
 
@@ -197,25 +200,29 @@ class QuizGame:
 def main():
     game = QuizGame()
 
-    while True:
-        show_menu()
-        choice = read_number("선택: ", 1, 5)
-
-        if choice == 5:
-            game.save()
-            print("게임을 종료합니다.")
-            break
-        elif choice == 1:
-            game.play()
-        elif choice == 2:
-            game.add()
-        elif choice == 3:
-            game.show_list()
-        elif choice == 4:
-            game.show_score()
-
-if __name__ == "__main__":
     try:
-        main()
+        while True:
+            game.show_menu()
+            choice = read_number("선택: ", 1, 5)
+
+            if choice == 5:
+                break
+            elif choice == 1:
+                game.play()
+            elif choice == 2:
+                game.add()
+            elif choice == 3:
+                game.show_list()
+            elif choice == 4:
+                game.show_score()
+
     except (KeyboardInterrupt, EOFError):
         print("\n입력이 중단되어 게임을 종료합니다.")
+
+    finally:
+        game.save()
+        print("게임을 종료했습니다.")
+
+
+if __name__ == "__main__":
+    main()
