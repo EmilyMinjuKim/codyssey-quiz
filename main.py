@@ -14,9 +14,10 @@ def show_menu():
 
 def read_number(prompt, minimum, maximum):
     while True:
-        text = input(prompt).strip()
+        # 입력받은 문자열의 앞뒤 공백 제거
+        text = input(prompt).strip() 
 
-        if not text:
+        if not text: # 빈 문자열인지 확인
             print("입력이 비어 있어요. 번호를 입력해주세요.")
             continue
 
@@ -87,9 +88,13 @@ def list_quizzes(quizzes):
     for number, quiz in enumerate(quizzes, start=1):
         print(f"{number}. {quiz.question}")
 
+# 클래스는 서로 관련된 데이터와 기능을 하나로 묶어서 관리하기 위함.
+# 클래스는 설계도(붕어빵 틀), 객체는 그 설계도로 만든 실제 데이터와 기능의 묶음(붕빵).
 class QuizGame:
+
+    # 객체 초기 상태 설정 
     def __init__(self):
-        self.quizzes = create_default_quizzes()
+        self.quizzes = create_default_quizzes()  #quiz_data.py에서 설정된 값들 가지고 옴. 
         self.best_score = 0
         self.load()
 
@@ -136,7 +141,8 @@ class QuizGame:
 
         print("게임 기록을 저장했습니다.")
         return True
-    
+
+    # 프로그램을 껐다 켜도 유지하는 데 JSON을 사용.
     def load(self):
         path = Path(__file__).resolve().parent / "state.json"
 
@@ -216,7 +222,7 @@ def main():
             elif choice == 4:
                 game.show_score()
 
-    except (KeyboardInterrupt, EOFError):
+    except (KeyboardInterrupt, EOFError):   #EOFError = End of File : 입력없이 강제종료 될 때 
         print("\n입력이 중단되어 게임을 종료합니다.")
 
     finally:
