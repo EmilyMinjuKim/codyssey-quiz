@@ -87,6 +87,7 @@ def list_quizzes(quizzes):
 
 def main():
     quizzes = create_default_quizzes()
+    best_score = 0
 
     while True:
         show_menu()
@@ -96,13 +97,16 @@ def main():
             print("게임을 종료합니다.")
             break
         elif choice == 1:
-            play_quiz(quizzes)
+            score = play_quiz(quizzes)
+            if score is not None and score > best_score:
+                best_score = score
+                print("최고 점수를 갱신했습니다!")
         elif choice == 2:
             add_quiz(quizzes)
         elif choice == 3:
             list_quizzes(quizzes)
         elif choice == 4:
-            print("점수 확인을 선택했어요.")
+            print(f"\n최고 점수: {best_score}점")
 
 
 if __name__ == "__main__":
